@@ -10,6 +10,11 @@ export const attributes = {
                 left: "l-button",
                 right: "r-button",
             },
+            progressBar: "p-bar",
+            screenNumb: {
+                total: "sn-total",
+                current: "sn-current",
+            },
         },
     },
     config: `${toolPrefix}-config`,

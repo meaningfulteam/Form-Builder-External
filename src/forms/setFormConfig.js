@@ -1,4 +1,4 @@
-import { getFormLength, getConfig } from "../helpers/helpers";
+import { getConfig } from "../helpers/helpers";
 import { setControls } from "./setFormControls";
 import { setInitialState } from "./setInitialState";
 
@@ -11,14 +11,10 @@ import { setInitialState } from "./setInitialState";
 export const setFormConfig = (form) => {
     // Get form specs
     const config = getConfig(form);
-    const formLength = getFormLength(form);
 
     // Set initial state
-    setInitialState(form);
+    setInitialState(form, config);
 
     // Set buttons handlers
-    setControls(form);
-
-    if (config.progressBar) setProgressBar(form, formLength);
-    if (config.screenCounter) setScreenCounter(form, formLength);
+    setControls(form, config);
 };
