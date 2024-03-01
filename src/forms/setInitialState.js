@@ -3,7 +3,9 @@ import { setProgressBar } from "./setProgressBar";
 import { setScreenCounter } from "./setScreenCounter";
 
 // Destructure attributes constant
-const {els: { key, val }} = attributes;
+const {
+    els: { key, val },
+} = attributes;
 
 /**
  * Set the initial state of the form element
@@ -18,7 +20,8 @@ export const setInitialState = (form, config) => {
 
     // Reset buttons config.
     const $lButton = $(form).find(`[${key}="${val.buttons.left}"]`);
-    $lButton.hide();
+    const $sButton = $(form).find(`[${key}="${val.buttons.submit}"]`);
+    [$lButton, $sButton].forEach((el) => el.hide());
 
     // Set the progress bar configuration
     if (config.progressBar) setProgressBar(form);

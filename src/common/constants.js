@@ -9,6 +9,7 @@ export const attributes = {
             buttons: {
                 left: "l-button",
                 right: "r-button",
+                submit: "s-button",
             },
             progressBar: "p-bar",
             screenNumb: {
