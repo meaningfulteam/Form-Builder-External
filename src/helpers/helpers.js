@@ -9,7 +9,6 @@ const {
 
 /**
  * Retrieves the configuration from an HTML element
- *
  * @param {HTMLFormElement} el - HTML element with tagname = "FORM"
  * @returns {Object} - JSON object with the following structure:
  *   {
@@ -29,7 +28,7 @@ export const getConfig = (el) => {
  * @param {Object} config - configuraton object object
  * @returns {undefined}
  */
-export const changeScreen = ({form, direction, callback, config}) => {
+export const changeScreen = ({ form, direction, callback, config }) => {
     const screens = $(form).find(`[${key}="${val.screen}"]`);
     const currentScreen = screens.filter(":visible");
     let screenToShow;
@@ -58,4 +57,17 @@ export const changeScreen = ({form, direction, callback, config}) => {
 
     if (config.progressBar) setProgressBar(form);
     if (config.screenCounter) setScreenCounter(form);
+};
+
+/**
+ * Show error message when this function is called
+ * @param {HTMLFormElement} form - The form element containing the error wrapper
+ * @param {string} error - Error message
+ * @returns {undefined}
+ */
+export const showError = (form, error) => {
+    const $error = $(form).find(`[${key}="${val.error}"]`);
+    $error.text(error);
+    $error.show();
+    setTimeout(() => $error.hide(), 5000);
 };

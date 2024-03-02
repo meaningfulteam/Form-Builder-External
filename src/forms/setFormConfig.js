@@ -1,6 +1,7 @@
 import { getConfig } from "../helpers/helpers";
 import { setControls } from "./setFormControls";
 import { setInitialState } from "./setInitialState";
+import { configureSubmit } from "./configureSubmit";
 
 /**
  * Set the entire form logic based on the configuration attribute
@@ -17,4 +18,7 @@ export const setFormConfig = (form) => {
 
     // Set buttons handlers
     setControls(form, config);
+
+    // Set submit handler
+    configureSubmit(form);
 };

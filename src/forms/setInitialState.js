@@ -18,6 +18,10 @@ export const setInitialState = (form, config) => {
     const formScreens = $(form).find(`[${key}="${val.screen}"]`);
     formScreens.slice(1).hide();
 
+    // Reset error config.
+    const $error = $(form).find(`[${key}="${val.error}"]`);
+    $error.hide();
+
     // Reset buttons config.
     const $lButton = $(form).find(`[${key}="${val.buttons.left}"]`);
     const $sButton = $(form).find(`[${key}="${val.buttons.submit}"]`);
