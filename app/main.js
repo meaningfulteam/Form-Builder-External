@@ -4,6 +4,7 @@ import {
   interactedAttr,
   disabledAttr,
   screenTypes,
+  inputWrapperAttr,
 } from "./constants";
 import {
   getContinueButton,
@@ -32,27 +33,34 @@ forms.forEach((form) => {
       const fieldsSelectors =
         "select, input[type='text'], input[type='email'], input[type='tel'], input[type='number']";
       const fieldsArr = screen.querySelectorAll(fieldsSelectors);
-      const phoneInput = screen.querySelector("input[type='tel']");
+      const phoneInputs = screen.querySelectorAll("input[type='tel']");
       //TODO: handle more than one phone input per screen
-      let iti;
-      if (phoneInput) {
-        iti = window.intlTelInput(phoneInput, {
-          utilsScript:
-            "https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/utils.js",
-          separateDialCode: true,
-          initialCountry: "auto",
-          geoIpLookup: function (callback) {
-            fetch("https://ipapi.co/json")
-              .then(function (res) {
-                return res.json();
-              })
-              .then(function (data) {
-                callback(data.country_code);
-              })
-              .catch(function () {
-                callback("mx");
-              });
-          },
+      let itiArray = [];
+
+      if (phoneInputs.length != 0) {
+        phoneInputs.forEach((phoneInput) => {
+          let iti;
+          if (phoneInput) {
+            iti = window.intlTelInput(phoneInput, {
+              utilsScript:
+                "https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/utils.js",
+              separateDialCode: true,
+              initialCountry: "auto",
+              geoIpLookup: function (callback) {
+                fetch("https://ipapi.co/json")
+                  .then(function (res) {
+                    return res.json();
+                  })
+                  .then(function (data) {
+                    callback(data.country_code);
+                  })
+                  .catch(function () {
+                    callback("mx");
+                  });
+              },
+            });
+          }
+          itiArray.push(iti);
         });
       }
 
@@ -99,15 +107,16 @@ forms.forEach((form) => {
           }
 
           // Case: field type phone
-          if (field === phoneInput) {
-            const inputWrapper = field.closest(".quiz_field_wrap");
+          if ([...phoneInputs].some((phoneInput) => phoneInput === field)) {
+            const itiIndex = [...phoneInputs].indexOf(field);
+            const inputWrapper = field.closest(`[${inputWrapperAttr}]`);
             const fullPhoneInput = inputWrapper.querySelector(
               "input[type='hidden'][data-name='phone']"
             );
 
-            if (iti.isPossibleNumber()) {
+            if (itiArray[itiIndex].isPossibleNumber()) {
               //When number is Valid
-              fullPhoneInput.value = iti.getNumber();
+              fullPhoneInput.value = itiArray[itiIndex].getNumber();
               hideError(field);
             } else {
               //When number is Invalid
@@ -146,9 +155,11 @@ forms.forEach((form) => {
         });
       });
 
-      if (phoneInput) {
-        phoneInput.addEventListener("countrychange", (e) => {
-          validateFields();
+      if (phoneInputs.length != 0) {
+        phoneInputs.forEach((phoneInput) => {
+          phoneInput.addEventListener("countrychange", (e) => {
+            validateFields();
+          });
         });
       }
       return;
@@ -168,7 +179,7 @@ forms.forEach((form) => {
       radioButtons.forEach((radio) => {
         radio.addEventListener("click", (e) => {
           if (e.target.checked) {
-            nextScreen({ currentScreen: screen, progressBar, allScreens });
+            nextScreen({ currentScreen: screen, progressBar, allScreens }); // TODO: add progress bar definition
           }
         });
       });
@@ -183,7 +194,7 @@ forms.forEach((form) => {
 
       continueButton.addEventListener("click", (e) => {
         if (continueButton.hasAttribute(disabledAttr)) return;
-        nextScreen({ currentScreen: screen, progressBar, allScreens });
+        nextScreen({ currentScreen: screen, progressBar, allScreens }); // TODO: add progress bar definition
       });
     }
   });
